@@ -2,8 +2,8 @@
 
 This repository contains anonymized trial-level data and code for processing and analyzing data.
 
-- OSF project homepage: \url{https://osf.io/reaz5/}
-- Study methods and analyses were preregistered on the Open Science Framework at \url{https://osf.io/bzkm6}.
+- OSF project homepage: https://osf.io/reaz5/
+- Study methods and analyses were preregistered on the Open Science Framework at https://osf.io/bzkm6.
 
 The participant-facing study name is "How can that be?"
 
