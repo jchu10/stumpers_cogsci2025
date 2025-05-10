@@ -1,20 +1,24 @@
-# stumpers_cogsci2025
+# Stumped! Learning to think outside the box in 3-7-year-old children
 
+This repository contains anonymized trial-level data and code for processing and analyzing data.
+
+- OSF project homepage: \url{https://osf.io/reaz5/}
+- Study methods and analyses were preregistered on the Open Science Framework at \url{https://osf.io/bzkm6}.
 
 The participant-facing study name is "How can that be?"
 
 #### -- Project status: Active
 
-## Project objective: 
+## Study objective: 
 
-The purpose of this project is to investigate the development of creative problem-solving in children ages 3 to 7 years. The study is hosted on [ChildrenHelpingScience](ChildrenHelpingScience.com).
+The purpose of this study is to investigate the development of creative problem-solving in children ages 3 to 7 years. The study is hosted on [ChildrenHelpingScience](ChildrenHelpingScience.com).
 
 ## Repository Contents
 
 - `data`: Contains cleaned and shareable data (`tidy_anonymized/`) and folder structure of raw private data from the experiment (`How-can-that-be---psychds`, `annotations`, `tidy_identifiable`).
 - `materials`: Experiment code and stimuli
 - `results`: Intermediate results. `plots/` contains figures which may be modified for publication.
-- `scripts`: R scripts for data preprocessing and Rmd notebooks for preregistered analyses and any final reports.
+- `analyses`: `R` scripts for data preprocessing and `Rmd` notebooks for preregistered analyses and any final reports.
 
 ## Contributors
 
