@@ -1,0 +1,15 @@
+.DS_Store
+auth.json
+auth.txt
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+.zip
+
+# ignore data files, keep folders, keep gitkeep files
+/data/How-can-that-be---psychds/data/raw/**
+!/data/How-can-that-be---psychds/data/**/
+/data/How-can-that-be---psychds/data/**
+!/data/tidy_identifiable/README.md
+/data/tidy_identifiable/**

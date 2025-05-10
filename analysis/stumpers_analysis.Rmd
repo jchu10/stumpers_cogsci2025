@@ -1,0 +1,1082 @@
+---
+title: "GARDEN 2A - Stumpers"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: paper
+    code_folding: "hide"
+    df_print: paged
+---
+
+# Overview
+
+[Pre-registration](https://osf.io/5ahpw)  GARDEN 2A.1 Performance and learning on the ball drop game
+
+# Set up
+
+Load packages, ggplot themes, etc.
+
+```{r setup, include=FALSE, warning=F, message=F}
+#rm(list=ls())
+if(!require("pacman")) install.packages("pacman")
+pacman::p_load('tidyverse','here',
+                'lme4', 'tidyboot', 'nnet',
+               'ggpubr', 'scales', 'ggExtra',
+               'rstatix', 'lmerTest', 'papaja',
+               'broom', "broom.helpers", 'broom.mixed',
+               'sjPlot','emmeans')
+here::i_am("analysis/stumpers_analysis.Rmd")
+options(digits=4)
+set.seed(12341)
+knitr::opts_chunk$set(
+	fig.width = 6,
+	fig.height = 4,
+	message = FALSE,
+	warning = FALSE
+)
+# plots template
+
+apa_theme <- function(base_size=10, gridlines=F) {
+  mytheme <- theme_minimal() +
+    theme(
+      text=element_text(size=base_size),
+      plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "cm"),
+      plot.background = element_rect(fill = "white", color = NA),
+      plot.title = element_text(size = 12, face = "bold",
+                                hjust = 0.5,
+                                margin = margin(b = 15)),
+      axis.line = element_line(color = "black", linewidth = .5),
+      axis.title = element_text(size = base_size+2, color = "black",
+                                face = "bold"),
+      axis.text = element_text(color = "black"),
+      axis.text.x = element_text(margin = margin(t = 5)),
+      axis.title.y = element_text(margin = margin(r = 5)),
+      axis.ticks = element_line(size = .5),
+      strip.text = element_text(size=base_size+2),
+      panel.grid.minor.x=element_blank(),
+      legend.position="right",
+      legend.title=element_blank(),
+      legend.background=element_rect(color="black"),
+      legend.text=element_text(size=base_size+2),
+      legend.margin=margin(t=5,l=5,r=5,b=5),
+      legend.key=element_rect(color=NA, fill=NA)
+    )
+  if (!gridlines) {
+    mytheme <- mytheme + theme(panel.grid = element_blank())
+  }
+  return(mytheme)
+}
+
+theme_set(apa_theme(base_size=12))
+
+# Custom formatting fucntion
+format_pval <- function(pval){
+  pval <- scales::pvalue(pval, accuracy= 0.0001, add_p = TRUE)
+  gsub(pattern = "(=|<)", replacement = " \\1 ", x = pval)
+}
+```
+
+
+# Import data
+
+We only analyse included trials
+
+```{r}
+df.stumpers <- read_csv(here('results/csv/stumpers_trial-responses-included.csv')) %>%
+  mutate(is_correct = ifelse(response_category =='target_solution', 1, 0),
+         is_correct_alternate = ifelse(response_category %in% c('target_solution', 'alternative_solution'), 1, 0),
+         is_incorrect = ifelse(response_category %in% c('incorrect_response', 'incorrect_noresponse'), 1, 0),
+         response_category = factor(response_category, 
+                                     levels=c('target_solution', 
+                                              'alternative_solution', 
+                                              'incorrect_response', 
+                                              'incorrect_noresponse')),
+         parentScore = ifelse(parentCode=='similar',1, 0),
+         parentCode = factor(parentCode, 
+                                levels=c('similar', 
+                                         'different', 
+                                         'no_answer')),
+        trial_order_within_set = (trial_num -1) %% 3, # 0 = first, 1 = second, 2 = third
+        set_order = floor((trial_num-1)/3)) # 0 = first, 1 = second, 2 = third
+```
+
+### Sanity checks
+
+Check each participant contributes exactly one session, no repeats:
+- There are `r n_distinct(df.stumpers$child_hashed_id)` unique children in the dataset.
+
+Check number of trials contributed by participant
+
+```{r}
+df.stumpers %>% 
+  count(child_hashed_id) %>% 
+  count(n)
+```
+
+Check response scoring
+
+```{r}
+df.stumpers %>% count(response_category, is_correct, is_correct_alternate)
+```
+
+check trial numbers
+
+```{r}
+df.stumpers %>% count(trial_num, trial_order_within_set)
+```
+
+### Item randomization check
+
+How many responses per riddle? 
+
+```{r}
+df.stumpers %>% count(question_set, question_id)
+```
+
+Were question sets randomly shuffled ? 
+
+```{r}
+df.stumpers %>% count(question_set, set_order) %>% 
+  ggplot(aes(x=set_order, y=n, fill=question_set)) +
+  geom_col(position = "dodge" ) +
+  labs(x="Set order", y="Number of responses") +
+  scale_fill_viridis_d()
+```
+
+Were items evenly distributed to trial numbers within set?
+
+```{r}
+df.stumpers %>% group_by(question_set) %>%
+  count(question_id, trial_order_within_set) %>% 
+  ggplot(aes(x=trial_order_within_set, y=n, fill=question_id)) +
+  geom_col(position = "dodge", alpha=0.7, color="black" ) +
+  labs(x="Trial order within each category", y="Number of responses") +
+  facet_grid(question_set~.)
+```
+
+Were items evenly distributed to trial numbers overall?
+
+```{r}
+df.stumpers %>% 
+  count(question_set, question_id, trial_num, trial_order_within_set, set_order) %>% 
+  ggplot(aes(x=trial_num, y=question_id, color=question_id, size = n)) +
+  geom_point() +
+  labs(x="Trial order", y="Number of responses") +
+  facet_grid(question_set~., scales = "free") +
+  guides(color = "none")
+```
+
+## Create child-level aggregates
+
+```{r}
+df.stumpers.bychild <- 
+  df.stumpers %>%
+  group_by(child_hashed_id, age_months) %>%
+  summarize(n_trials_included = n(),
+            n_correct = sum(is_correct, na.rm=T),
+            n_parent_correct = sum(parentScore, na.rm=T),
+            n_correct_alternate = sum(is_correct_alternate, na.rm=T),
+            n_alternate = sum(response_category == 'alternative_solution', na.rm=T))
+
+write_csv(df.stumpers.bychild, here("results", "csv/stumpers_bychild_data.csv"))
+```
+
+# Participants
+
+### Exclusions
+
+These are detailed in `exclusions.R`
+
+## Included participant demographics
+
+### Age
+```{r}
+df.stumpers %>% select(child_hashed_id, age_months) %>% distinct() %>%
+  summarize(
+    n = n(),
+    m_age = mean(age_months, na.rm=T),
+    sd_age = sd(age_months, na.rm=T),
+    min_age = min(age_months, na.rm=T),
+    max_age = max(age_months, na.rm = T)
+  )
+```
+
+### Gender
+
+```{r}
+df.stumpers %>% select(child_hashed_id, child_gender) %>% distinct() %>%
+  count(child_gender)
+```
+
+### Languages: 
+```{r}
+df.stumpers %>% select(child_hashed_id, child__language_list) %>%
+  distinct() %>%
+  count(child__language_list)
+```
+
+### Race/Ethnicity: 
+
+
+# Descriptives
+
+## All trials combined
+
+(`r nrow(df.stumpers)` items) Trials:
+
+```{r}
+# Response category proportions
+df.stumpers %>% 
+  count(response_category) %>%
+  mutate(prop = n / sum(n))
+
+# Individual performance summary
+df.stumpers.bychild %>%
+  tidyboot_mean(n_correct)
+```
+
+Individual children provide target solution on median of `r median(df.stumpers.bychild$n_correct)`out of 9 trials (Mean = `r mean(df.stumpers.bychild$n_correct)`, SD = `r sd(df.stumpers.bychild$n_correct)`)
+
+```{r}
+# Summary stats
+df.stumpers %>%
+  group_by(child_hashed_id) %>%
+  summarise(n_target = sum(response_category == "target_solution")) %>%
+  summarise(
+    median = median(n_target),
+    mean = round(mean(n_target), 2),
+    sd = round(sd(n_target), 2)
+  )
+```
+
+We can see this as a histogram:
+
+```{r}
+df.stumpers.bychild %>%
+  ggplot(aes(n_correct)) +
+  geom_bar() +
+  scale_x_continuous(breaks=seq(0,9,1)) +
+  labs(x="Number of correct trials", y = "Number of participants")
+```
+
+
+### by question category
+
+```{r}
+# Category performance
+df.stumpers %>% group_by(question_set) %>%
+  tidyboot_mean(is_correct, na.rm=T)
+
+# Chi-square test - differences between categories
+df.stumpers %>%
+  group_by(question_set) %>%
+  summarize(
+    correct = sum(response_category == "target_solution"),
+    incorrect = n() - sum(response_category == "target_solution")) %>%
+ select(correct, incorrect) %>%
+ chisq.test()
+```
+
+### By riddle
+
+```{r}
+df.stumpers %>% group_by(question_set, question_id) %>%
+  tidyboot_mean(is_correct, na.rm=T)
+```
+
+Overall performance by riddle visualized
+```{r}
+df.stumpers %>% 
+  ggplot() +
+  geom_bar(aes(x=question_id, fill=forcats::fct_rev(response_category)), position="fill") +
+  facet_wrap(.~ question_set, scales = "free_x") +
+  scale_y_continuous(labels = scales::percent) +
+  scale_x_discrete(guide = guide_axis(angle = 45)) +
+  labs(x="Riddle", y="Proportion of responses", title = "Overall performance by riddle") +
+  scale_fill_manual(values=c("target_solution"="#26bd44", 
+                             "alternative_solution" = "#d1a402",
+                             "incorrect_response"="#d15c51", 
+                             "incorrect_noresponse"="grey"))
+```
+
+
+
+## Trial  1
+
+```{r}
+df.stumpers.trial1 <- filter(df.stumpers, trial_num==1)
+```
+
+There are `r nrow(df.stumpers.trial1)` included responses for trial 1.
+
+```{r}
+df.stumpers.trial1 %>%
+  group_by(response_category) %>%
+  summarise(
+    n = n(),
+    prop = n/nrow(filter(df.stumpers, trial_num == 1)) * 100
+  ) %>%
+  arrange(desc(prop))
+```
+
+This is not evenly distributed by response category
+```{r}
+# Chi-square test - 1st trial
+with(df.stumpers.trial1, {
+  tab <- table(response_category)
+  chisq.test(tab)})
+```
+
+### First trial by question category
+
+```{r}
+df.stumpers.trial1 %>%
+  group_by(question_set) %>%
+  tidyboot_mean(is_correct, na.rm=T)
+```
+
+### First trial by riddle
+
+```{r}
+df.stumpers.trial1 %>% 
+  ggplot() +
+  geom_bar(aes(x=question_id, fill=forcats::fct_rev(response_category)), position="fill") +
+  facet_wrap(.~ question_set, scales = "free_x") +
+  scale_y_continuous(labels = scales::percent) +
+  scale_x_discrete(guide = guide_axis(angle = 45)) +
+  labs(x="Riddle", y="Proportion of responses", title = "Trial 1 performance by riddle") +
+  scale_fill_manual(values=c("target_solution"="#26bd44", 
+                             "alternative_solution" = "#d1a402",
+                             "incorrect_response"="#d15c51", 
+                             "incorrect_noresponse"="grey")) +
+  geom_hline(yintercept = mean(df.stumpers.trial1$is_correct), linetype="dashed", color = "black")
+```
+
+### Binomial test w/ alternative solutions
+
+```{r}
+binom.test(sum(table(df.stumpers.trial1$response_category)[c("target_solution", "alternative_solution")]),
+           length(df.stumpers.trial1$response_category),
+           p = prop.table(table(df.stumpers.trial1$response_category))["target_solution"])
+```
+
+
+## Trial 1 of each set
+
+```{r}
+df.stumpers%>%
+  filter(trial_num %in% c(1, 4, 7)) %>%
+  group_by(trial_num) %>%
+  summarize(
+    mean = mean(is_correct) * 100,
+    sd = sd(is_correct) * 100
+  )
+```
+
+
+## Trial effect
+
+### Trial number within
+
+```{r}
+(df.stumpers.trialavg <- df.stumpers %>%
+  filter(!is.na(is_correct)) %>%
+  group_by(trial_num) %>%
+  tidyboot_mean(is_correct, na.rm = TRUE))
+```
+
+### Trial order within set
+
+```{r}
+df.stumpers %>%
+  group_by(trial_order_within_set) %>%
+  summarise(
+    n = n(),  # number of participants
+    mean = mean(response_category == "target_solution") * 100,
+    sd = sd(response_category == "target_solution") * 100,
+    .groups = "drop"
+  ) %>%
+  arrange(trial_order_within_set)
+```
+
+### Trial order and age
+
+compute mean accuracy for younger and older kids
+```{r}
+# two age groups using median split at 64 months
+df.stumpers.trialavg.ages <-
+  df.stumpers %>%
+  mutate(correct = is_correct,
+         age_bin = factor(age_months > 64,
+                         labels = c("younger (3;3 - 5;4)", "older (5;5 - 7;7)"))
+         ) %>%
+  group_by(age_bin, trial_num) %>%
+  tidyboot_mean(correct)
+
+# Get counts by age group
+df.stumpers %>%
+  mutate(age_bin = factor(age_months > 64,
+                         labels = c("younger (3;3 - 5;4)", "older (5;5 - 7;7)"))) %>%
+  group_by(age_bin) %>%
+  summarise(n = n_distinct(child_hashed_id))
+
+```
+
+# Main Results Figure
+
+Plot with colored blocks
+
+```{r}
+mainfig <- df.stumpers.trialavg.ages %>%
+  ggplot(aes(x = trial_num, y = empirical_stat, 
+             group = age_bin)) +
+  annotate("rect", xmin = 0.5, xmax = 3.5, ymin = 0, ymax = 0.65, fill = "#c7e9c0") +
+  annotate("text", x = 2, y = 0.6, label = "1st Riddle Category") +
+  annotate("rect", xmin = 3.5, xmax = 6.5, ymin = 0, ymax = 0.65, fill = "#85C57D") +
+  annotate("text", x = 5, y = 0.6, label = "2nd Riddle Category") +
+  annotate("rect", xmin = 6.5, xmax = 9.5, ymin = 0, ymax = 0.65, fill = "#31a354") +
+  annotate("text", x = 8, y = 0.6, label = "3rd Riddle Category") +
+  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), 
+                width = 0.2, color = "black",
+                position = position_dodge(width=0.4)) +
+  geom_line(aes(linetype = age_bin), color = "black",
+            position = position_dodge(width=0.4)) +
+  geom_point(aes(shape = age_bin), size = 3,
+             color = "black", fill = "white",
+             position = position_dodge(width=0.4)) +
+  scale_linetype_manual(values = c("solid", "dashed")) +
+  scale_shape_manual(values = c(19, 24)) +
+  coord_cartesian(ylim=c(0,0.65), xlim = c(1,9)) +
+  scale_y_continuous(labels = scales::percent, 
+                    breaks = seq(0, 0.8, by = 0.1),
+                    expand = c(0,0)) +
+  scale_x_continuous(breaks = 1:9, labels = 1:9) +
+  labs(x = "Trial number",
+       y = "Percent correct") +
+  theme(legend.position = "top")
+
+mainfig
+
+ggsave(plot=mainfig, 
+       here("results", "plots", "stumpers_accuracy_trials_age_lines_withlegend.pdf"), width=6, height=4,
+       dpi=300)
+
+# ggsave(plot = mainfig + theme(legend.position="none"), 
+#        here("results", "plots", "stumpers_accuracy_trials_age_lines.pdf"), width=6, height=3.5,
+#        dpi=300)
+```
+
+
+# Preregistered Analyses
+
+Our analysis approach is to use mixed-effects logistic regression to model trial-level accuracy (correct / not correct) as a function of trial number (within-block; factor; values 1 to 3), block number (factor; values 1 to 3), and age (in days, z-scored). To respect the repeated measures design, we will include a random subject intercept to account for variation in baseline accuracy for each participant, and a random item intercept to account for variation in baseline difficulty for each riddle.
+
+```{r}
+# Prepare data for models
+df_model <- df.stumpers %>%
+  select(child_hashed_id, age_months, 
+         question_set, question_id, trial_num, 
+         trial_order_within_set, set_order, 
+         is_correct, is_correct_alternate, is_incorrect) %>%
+  mutate(age_scaled = scale(age_months),
+         trial_order_within_set = as.integer(trial_order_within_set),
+         set_order = as.integer(set_order),
+         question_id = as.factor(question_id),
+         child_hashed_id = as.factor(child_hashed_id))
+
+# Verify coding
+df_model %>% count(trial_num, set_order, trial_order_within_set)
+```
+
+
+Trial level accuracy, block no., and age model
+
+```{r}
+model_1 <- glmer(is_correct ~ trial_order_within_set * set_order + age_scaled + (1|child_hashed_id) + (1|question_id), 
+      family=binomial,
+      data=df_model,
+      glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+
+summary(model_1)
+```
+
+Visualize model fixed effects estimates:
+
+```{r fig.height=4, fig.width=4}
+plot_model(model_1, type="est", title = "Likelihood of correct answers",
+           show.values = TRUE, value.offset = .3) + # print values above dots
+  ylim(-0.5, 3)
+```
+
+View in tabular form as odds ratios:
+
+```{r}
+model_1.tidy <- tidy(model_1, conf.int = TRUE)
+
+(model_1.tidyOR <- tidy(model_1, conf.int = TRUE, exponentiate = TRUE))
+```
+
+Visualize model random effects on question id:
+
+```{r}
+plot_model(model_1, type = "re")[[2]]
+```
+
+## RQ1: Learning across trials, within category
+
+*Our first question is whether riddle exposure leads children to learn ways of solving other riddles within a given category. We predict that children will show improvements in accuracy across trials within the same block. To assess this prediction, we will test whether the coefficient of trial number is greater than zero (one-tailed t-test).*
+
+
+```{r}
+model_1.tidyOR %>% filter(term == "trial_order_within_set")
+```
+
+
+*If this coefficient is significant, we will run follow-up pairwise contrasts (z-tests on log odds ratios between trials, tukey-adjusted p-values) to test for improvement between trials 1→2, 2→3, and 1→3.* 
+
+As we can see above, the coefficient of trial number is significant, indicating that children are more likely to answer correctly on later trials within a block. 
+
+Deviation: We coded trial & block number as numeric (not categorical), so the pairwise contrasts are not straightforward. Instead, we will inspect the empirical means for trial number: 
+```{r fig.height=4, fig.width=4}
+within_category_result <- model_1.tidyOR %>%
+  filter(term == "trial_order_within_set") %>%
+  mutate(
+    ci_lower = conf.low,
+    ci_upper = conf.high,
+    p_formatted = if_else(p.value < 0.001, 
+                         "p < .001",
+                         sprintf("p = %.3f", p.value)),
+    result = sprintf("OR = %.2f, 95%% CI [%.2f, %.2f], %s",
+                    estimate, 
+                    ci_lower,
+                    ci_upper,
+                    p_formatted)
+  ) %>%
+  pull(result)
+
+cat("Within-category learning effect:", within_category_result, "\n")
+
+# Descriptive statistics by trial order
+df.stumpers %>%
+  group_by(trial_order_within_set) %>%
+  summarise(
+    n = n(),
+    mean = mean(response_category == "target_solution") * 100,
+    sd = sd(response_category == "target_solution") * 100,
+    .groups = "drop"
+  ) %>%
+  arrange(trial_order_within_set)
+
+```
+
+
+Inspect the empirical means for trial number:
+
+```{r}
+(means.trial_order <- (df_model %>% 
+  group_by(trial_order_within_set) %>%
+  tidyboot_mean(is_correct)))
+```
+
+#### Plot
+
+```{r fig.height=4, fig.width=4}
+means.trial_order %>%
+  ggplot(aes(x = trial_order_within_set, y= empirical_stat)) +
+  geom_bar(stat="identity", width=0.8, fill= '#B3CDE3') +
+  geom_errorbar(aes(ymin=ci_lower, ymax=ci_upper), stat="identity", position="identity", width=0.3) +
+  scale_x_continuous("Trial number within set", breaks=c(0,1,2), labels=c("1", "2", "3")) +
+  scale_y_continuous("Average percent correct", labels = scales::percent,
+                     limits=c(0,0.3))
+
+ggsave(here("results", "plots", "stumpers_trial_effect.pdf"),
+dpi=300, width=3, height=3.5)
+```
+
+
+## RQ2: Improvement across categories
+
+Our second question is whether children also show learning across riddle categories. We predict that children will show improvements in accuracy across blocks. That is, a riddle presented on later blocks should yield higher correct answers than the same riddle presented on block 1. To assess this prediction, we will test whether the slope of block number is positive (one-tailed t-test).  
+
+### RQ2.1 Improvement across categories
+
+Extract odds ratio for across-set improvement
+
+```{r}
+model_1.tidyOR %>% filter(term == "set_order")
+```
+
+*If there is a significant slope, we will run follow-up pairwise contrasts (z-tests on log odds ratios between blocks, tukey-adjusted p-values) to test for improvement between blocks 1→2, 2→3, and 1→3.* 
+
+As before, this pre-registered contrast doesn't really make sense. Instead, inspect empirical means and CIs:
+
+
+```{r}
+df.stumpers %>%
+  group_by(set_order) %>%
+  summarise(
+    n = n(),
+    mean = mean(response_category == "target_solution") * 100,  # convert to percentage
+    sd = sd(response_category == "target_solution") * 100,  # convert to percentage
+    .groups = "drop"
+  ) %>%
+  arrange(set_order) %>%
+  mutate(
+    stats = sprintf("%.1f%% (SD = %.1f), n = %d", mean, sd, n)
+  )
+```
+
+#### Plot: 
+
+```{r fig.height=4, fig.width=4}
+(means.set_order <- df_model %>% 
+  group_by(set_order) %>%
+  tidyboot_mean(is_correct))
+
+means.set_order %>%
+  ggplot(aes(x = set_order, y = empirical_stat, 
+             fill = factor(set_order),
+             alpha = factor(set_order))) +
+  geom_bar(stat = "identity", width = 0.8) +
+  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), 
+                stat = "identity", 
+                position = "identity", 
+                width = 0.3,
+                alpha = 1) +
+  scale_x_continuous("Set order", 
+                    breaks = c(0, 1, 2), 
+                    labels = c("1", "2", "3")) +
+  scale_y_continuous("Average percent correct",
+                    labels = scales::percent,
+                    limits = c(0, 0.3)) +
+  scale_fill_manual(values = c("#c7e9c0", "#85C57D", "#31a354"),
+                    guide = "none") +
+  scale_alpha_manual(values = c(1, 1, 1),
+                    guide = "none")
+
+ggsave(here("results", "plots", "stumpers_setorder_effect.pdf"),
+       dpi=300, width=3, height=3.5)
+```
+
+### RQ2.2 Interaction of block and trial number
+
+We will also examine if there is an interaction between trial number and block number. While we do not have a specific prediction about this effect, it is possible, for example, that children show greater learning on later blocks. To assess this possibility, we will test if the regression model with a trial number by block number interaction is a better fit than the model without an interaction, based on a significant likelihood ratio test and lower AIC value. We will further characterize any significant interaction by inspecting model-estimated marginal means (i.e., model-predicted accuracy for all 9 trials). 
+
+```{r}
+model_2 <- update(model_1, . ~ . - trial_order_within_set:set_order)
+anova(model_1, model_2)
+```
+
+There is a significant trial by set number interaction! 
+Let's visualize model predictions. 
+In later blocks, the slope of trial number is flatter, indicating that children are improving slower on later blocks.
+
+```{r}
+plot_model(model_1, type="int",
+           terms=c("trial_order_within_set", "set_order"),
+           mdrt.values = "all") + # what levels of set order
+  scale_x_continuous(breaks=c(0,1,2))
+```
+
+Means
+
+```{r}
+df.stumpers %>%
+  filter(trial_order_within_set %in% c(0,2)) %>%
+  group_by(set_order, trial_order_within_set) %>%
+  summarize(
+    n = n(),
+    acc = mean(is_correct, na.rm=TRUE), 
+    .groups="drop"
+  ) %>%
+  pivot_wider(names_from = trial_order_within_set, values_from = c(n, acc)) %>%
+  mutate(improvement_ratio = acc_2/acc_0)
+```
+
+#### First trial performance across blocks
+```{r}
+df.stumpers%>%
+  filter(trial_num %in% c(1, 4, 7)) %>%
+  group_by(trial_num) %>%
+  summarize(
+    mean = mean(is_correct) * 100,
+    sd = sd(is_correct) * 100
+  )
+```
+
+#### improvement rate by riddle category
+
+```{r}
+df.stumpers %>%
+  filter(trial_order_within_set %in% c(0,2)) %>%
+  group_by(question_set,trial_order_within_set) %>%
+  summarize(
+    n = n(),
+    acc = mean(is_correct, na.rm=TRUE), 
+  )
+```
+
+
+## RQ3: Age
+
+Finally, our third question concerns the developmental trajectory of accuracy, within-block learning, and across-block generalization. 
+
+#### Correlation, age and target solutions
+
+```{r}
+(age_corr <- cor.test(df.stumpers.bychild$age_months, df.stumpers.bychild$n_correct))
+```
+
+Correlation between age and target solutions: r = `r apa_print(age_corr)$full_result`
+
+#### Correlation, age and alternative solutions
+
+Frequency of alternative solutions also increase with age: `r apa_print(cor.test(df.stumpers.bychild$age_months, df.stumpers.bychild$n_alternate))$full_result`
+
+```{r}
+df.stumpers.bychild %>%
+  ggplot(aes(x=age_months, y=n_correct_alternate)) +
+  geom_point(fill='grey50', shape=21, alpha=0.3,
+             position = position_jitter(width=0, height=0.1)) +
+  geom_smooth(method = lm, color = "blue", se=TRUE) +
+  stat_cor(method="pearson", color = "blue",
+           p.accuracy = 0.001, r.accuracy = 0.01) +
+  scale_x_continuous(breaks=seq(36, 96, 12), 
+                     labels = seq(3,8,1),
+                     limits = c(36, 96)) +
+  scale_y_continuous(breaks=seq(0,9,3)) +
+  labs(y="Number of riddles solved\n(including Alternative solutions)", x="Age (years)")
+
+# ggMarginal(p, type = "histogram")
+
+# ggsave(here("results", "plots", "stumpers_accuracy_age_incl-alternate.pdf"),
+#        width=4, height=3, dpi=300)
+
+```
+
+### RQ3.1 Age effects on overall accuracy
+
+Extract model-estimated coefficient for age (scaled):
+```{r}
+# Extract coefficient for age
+model_1.tidy %>% filter(term == "age_scaled")
+```
+
+Convert to odds ratio: odds increase by 2x for every 1 SD increase in age.
+```{r}
+model_1.tidyOR %>% filter(term == "age_scaled")
+```
+
+Here Age is z-scored, so let's unscale it back to months for interpretation:
+
+```{r}
+scale_age <- function(age_months, scale, center) {
+  (age_months - center) / scale
+}
+
+unscale_age <- function(age_months, scale, center) {
+  age_months * scale + center
+}
+
+age.scaling_factor <- attr(df_model$age_scaled, 'scaled:scale')
+age.center_factor <- attr(df_model$age_scaled, 'scaled:center')
+
+plot_model(model_1, type="pred", terms = "age_scaled") +
+  scale_x_continuous(limits = scale_age(c(36, 96), age.scaling_factor,age.center_factor),
+                     breaks = scale_age(seq(36, 96, 12), age.scaling_factor,age.center_factor),
+                     labels = seq(3, 8, 1)) +
+  labs(x = "Age (years)", y = "Probability of target answer",
+       title = "Predicted accuracy")
+```
+
+Plot individual - accuracy by age
+
+```{r fig.height=4, fig.width=5}
+p <- df.stumpers.bychild %>%
+  ggplot(aes(x=age_months, y=n_correct)) +
+  geom_point(fill='grey50', shape=21, alpha=0.3,
+                          position = position_jitter(width=0, height=0.1)) +
+  geom_smooth(method = lm, color = "black", se=TRUE) +
+  stat_cor(method="pearson", color = "black",
+           p.accuracy = 0.001, r.accuracy = 0.01) +
+  scale_x_continuous(breaks=seq(36, 96, 12), 
+                     labels = seq(3,8,1),
+                     limits = c(36, 96)) +
+  scale_y_continuous(breaks=seq(0,9,3)) +
+  labs(y="Number of riddles solved (out of 9)", x="Age (years)")
+
+p
+
+# ggMarginal(p, type = "histogram")
+
+ggsave(here("results", "plots", "stumpers_accuracy_age.pdf"),
+       width=4, height=4, dpi=300)
+```
+
+Aggregating across trials, children produced the target solution on an average of `r mean(df.stumpers.bychild$n_correct)` riddles (SD =  `r sd(df.stumpers.bychild$n_correct)` ) out of 9, with older children producing more target solutions (Pearson's `r apa_print(cor.test(df.stumpers.bychild$age_months, df.stumpers.bychild$n_correct))$full_result`; age in months).
+
+
+### RQ3.2 Age on first riddle 
+
+We will also repeat this analysis for just the very first riddle (holding trial_num = 1 and block_number = 1).
+
+Plot data: 
+```{r}
+df.stumpers.trial1 %>%
+  ggplot(aes(x=age_months, y=is_correct)) +
+  geom_jitter(height = 0.05, fill='grey50', shape=21, alpha=0.3) +
+  geom_smooth(method = "glm", method.args = list(family = "binomial")) +
+  stat_cor(method="pearson", color = "blue",
+           p.accuracy = 0.001, r.accuracy = 0.01) +
+  scale_x_continuous(breaks=seq(36, 96, 12), 
+                     labels = seq(3,8,1),
+                     limits = c(36, 96)) +
+  scale_y_continuous(breaks = c(0,1)) +
+  labs(y="Accuracy on riddle 1", x="Age (years)")
+
+cor.test(df.stumpers.trial1$age_months, df.stumpers.trial1$is_correct)
+```
+
+### RQ3.3 Age * trial number
+
+To test if age influences within-block learning, we will test if including an age by trial number interaction improves model fit (model comparison using likelihood ratio test).
+
+```{r}
+model_3 <- update(model_1, . ~ . + trial_order_within_set:age_scaled)
+anova(model_1, model_3)
+```
+
+
+### RQ3.4 Age * block number
+
+To test if age influences across-block generalization, we will test if including an age by block number interaction improves model fit (model comparison using likelihood ratio test).
+
+```{r}
+model_4 <- update(model_1, . ~ . + set_order:age_scaled)
+anova(model_1, model_4)
+```
+
+Descriptives: 
+
+```{r}
+df.stumpers %>%
+  filter(set_order %in% c(0,1,2)) %>%
+  group_by(set_order) %>%
+  mutate(age_group_is_older = age_months >= median(age_months, na.rm=TRUE)) %>%
+  group_by(age_group_is_older, set_order) %>%
+  summarize(
+    n = n(),
+    acc = mean(is_correct, na.rm=TRUE), 
+  ) %>%
+  pivot_wider(names_from = set_order, values_from = c(n, acc)) %>%
+  mutate(improvement_ratio = acc_2/acc_0)
+```
+
+
+# Exploratory analyses
+
+## Shifts in response types over trials
+
+If we find evidence for a learning effect (i.e., if performance improves over trials or blocks), we will run an exploratory analysis examining shifts in response types over trials. For example, improved performance might be due to an increase in the proportion of children giving any response at all (perhaps reflecting feeling less “stumped”), or it may be due to shifts in giving higher quality responses (i.e., increased proportion of correct or alternative solutions). We will use multinomial regression models to predict the likelihood of each response category from trial number and block number.
+
+```{r}
+df.stumpers %>%
+  filter(trial_num %in% c(1,3)) %>%
+  group_by(question_set) %>%
+  mutate(age_group = age_months >= median(age_months, na.rm=TRUE)) %>%
+  group_by(age_group, question_set, trial_num) %>%
+  summarize(
+    n = n(),  # add this to check our counts
+    acc = mean(is_correct, na.rm=TRUE), 
+    .groups="drop"
+  ) %>%
+  pivot_wider(names_from = trial_num, values_from = c(n, acc)) %>%
+  mutate(improvement_ratio = acc_3/acc_1)
+```
+
+
+First let's visualize these shifts
+```{r}
+df.stumpers %>% 
+  ggplot() +
+  geom_bar(aes(x=trial_num, fill=forcats::fct_rev(response_category)), position="fill") +
+  # facet_wrap(.~ question_set, scales = "free_x") +
+  scale_y_continuous(labels = scales::percent) +
+  scale_x_discrete(guide = guide_axis(angle = 45)) +
+  labs(x="Trial number", y="Proportion of responses", title = "Response types over trials") +
+  scale_fill_manual(values=c("target_solution"="#26bd44", 
+                             "alternative_solution" = "#d1a402",
+                             "incorrect_response"="#d15c51", 
+                             "incorrect_noresponse"="grey"))
+```
+
+
+Hmm. Let's look another way
+
+```{r fig.height=5, fig.width=6}
+df.stumpers %>% 
+  count(trial_num, response_category) %>%
+  group_by(trial_num) %>%
+  mutate(prop = n / sum(n)) %>%
+  ggplot(aes(y = prop, x=trial_num, fill=response_category, color=response_category)) +
+  # geom_vline(xintercept =3.5, alpha=0.2) +
+  #   annotate("rect", xmin = 0.5, xmax = 3.5, ymin = 0, ymax = 0.8,
+  #          alpha = .2, fill = "#e5f5f9") +
+  annotate("text", x = 2, y = 0.75, label = "1st Category", size = 8/.pt) +
+  annotate("rect", xmin = 3.5, xmax = 6.5, ymin = 0, ymax = 0.8,
+           alpha = .2, fill = "grey75") +
+  annotate("text", x = 5, y = 0.75, label = "2nd Category", size = 8/.pt) +
+  # annotate("rect", xmin = 6.5, xmax = 9.5, ymin = 0, ymax = 0.8,
+  #          alpha = .2, fill = "#7600cf") +
+  annotate("text", x = 8, y = 0.75, label = "3rd Category", size = 8/.pt) +
+  geom_point(shape=21, size=2)+
+  geom_line(alpha=0.5) +
+  # facet_wrap(.~ question_set, scales = "free_x") +
+  scale_y_continuous(labels = scales::percent) +
+  scale_x_continuous(breaks = seq(1,9),
+                     labels = seq(1,9)) +
+  labs(x="Trial number", y="Proportion of responses", title = "Response types over trials") +
+  scale_fill_manual(values=c("target_solution"="#26bd44", 
+                             "alternative_solution" = "#d1a402",
+                             "incorrect_response"="#d15c51", 
+                             "incorrect_noresponse"="grey")) +
+  scale_color_manual(values=c("target_solution"="#26bd44", 
+                             "alternative_solution" = "#d1a402",
+                             "incorrect_response"="#d15c51", 
+                             "incorrect_noresponse"="grey")) 
+ggsave(here("results", "plots", "stumpers_response_types_over_trials.pdf"), width=6, height=4, dpi=300)
+```
+
+
+Multinomial regression using `nnet:multinom`. For interpretation, we treat target response as reference category.
+
+ORs reflect ratio of (that category) to target solutions.
+
+We fit two models, one with the interaction of trial number and set order, and one without. We will compare these models using a likelihood ratio test.
+```{r}
+fit.multinom1 <-  df.stumpers %>%
+  mutate(response_category = factor(response_category, 
+                                   levels=c( 'target_solution', 
+                                             'incorrect_noresponse', 
+                                             'alternative_solution', 'incorrect_response'))) %>%
+  multinom(response_category ~ trial_num + age_months, data = .)
+
+fit.multinom2 <-  df.stumpers %>%
+  mutate(response_category = factor(response_category, 
+                                   levels=c( 'target_solution', 
+                                             'incorrect_noresponse', 
+                                             'alternative_solution', 'incorrect_response'))) %>%
+  multinom(response_category ~ trial_order_within_set * set_order + age_months, data = .)
+
+anova(fit.multinom1, fit.multinom2)
+# keep interaction
+```
+
+Keep model with Trial num * set order and report.
+
+Betas
+```{r}
+tidy(fit.multinom2, conf.int = TRUE)
+```
+
+```{r}
+#View as ORs
+gtsummary::tbl_regression(fit.multinom2, exponentiate = TRUE)
+```
+
+
+## Is improvement effect driven by particular riddle categories or riddles?
+
+```{r fig.height=6, fig.width=6}
+riddle_accuracy <- df.stumpers %>%
+  group_by(question_set, question_id, trial_order_within_set) %>%
+  summarize(
+    prop_correct = mean(is_correct, na.rm = TRUE),
+    n = n()
+  ) %>%
+  ungroup()
+
+riddle_accuracy %>%
+  ggplot(aes(x = trial_order_within_set, y = prop_correct)) +
+  geom_rect(aes(xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf,
+               fill = question_set), alpha = 0.2) +
+  scale_fill_manual(values = c("#009180", "orange", "#7600cf")) +
+  geom_line(alpha = 0.3) +
+  geom_point(size = 1) +
+  facet_wrap(~ question_set + question_id, nrow = 3, scales = "free") +
+  scale_y_continuous(labels = scales::percent, 
+                    limits = c(0, 0.5)) +
+  scale_x_continuous(breaks = 0:2, labels=1:3) +
+  labs(
+    x = "Position within Category",
+    y = "Percent Correct"
+  ) +
+  theme(
+    strip.background = element_blank(),
+    legend.position = "none",
+    panel.spacing = unit(1, "lines")
+  )
+
+# ggsave(here("results", "plots", "stumpers_accuracy_riddles_within_set.pdf"), dpi=300)
+```
+
+### Performance by category
+```{r}
+df.stumpers %>%
+  mutate(correct = is_correct) %>%
+  group_by(question_set, trial_order_within_set) %>%
+  summarize(
+    mean = mean(correct) * 100,
+    sd = sd(correct) * 100
+  )
+```
+
+### Performance by riddle
+```{r}
+df.stumpers %>%
+  mutate(correct = is_correct) %>%
+  group_by(question_id) %>%
+  summarize(
+    mean = mean(correct) * 100,
+    sd = sd(correct) * 100
+  )
+```
+
+### Improvement on first set by age group
+
+Calculate improvement ratios by age group and riddle category on first set, from trial 1 to trial 3
+
+```{r}
+df.stumpers %>%
+  filter(trial_num %in% c(1,3)) %>%
+  group_by(question_set) %>%
+  mutate(age_group = age_months >= median(age_months, na.rm=TRUE)) %>%
+    mutate(age_group = factor(age_group, levels=c(FALSE, TRUE), labels = c("younger", "older"))) %>%
+  group_by(age_group, question_set, trial_num) %>%
+  summarize(
+    n = n(),
+    acc = mean(is_correct, na.rm=TRUE), 
+    .groups="drop"
+  ) %>%
+  pivot_wider(names_from = trial_num, values_from = c(n, acc)) %>%
+  mutate(improvement_ratio = acc_3/acc_1)
+```
+
+
+## Age by trial and set order
+
+Check full model with all age interactions against simplest model representing task structure:
+
+```{r}
+model_5 <- update(model_1, .~. + trial_order_within_set*set_order*age_scaled)
+anova(model_1, model_5)
+```
+
+# Session info
+
+```{r}
+sessionInfo()
+```
+

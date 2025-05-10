@@ -1,0 +1,655 @@
+{
+    "@context": "https://schema.org/",
+    "@type": "Dataset",
+    "name": "How can that be?",
+    "description": "In this Project GARDEN study, your child will play two mini-games. In Part 1, your child will hear a series of riddles describing puzzling everyday situations. We will ask your child to explain how these events could have happened. After providing an answer, your child will also hear the correct solutions. In Part 2, your child will play a ball drop game and watch what happens.",
+    "creator": {
+        "@type": "Person",
+        "@id": "[A unique URI such as an ORCID ID works best here]",
+        "email": "",
+        "givenName": "Junyi",
+        "familyName": "Junyi",
+        "affiliation": {
+            "@type": "Organization",
+            "email": "project.garden.study@gmail.com",
+            "name": "Project GARDEN",
+            "description": "GARDEN Phase 2 is now available for families who previously completed Phase 1! This means you should only do these studies if you did Phase 1 (with the fox videos) earlier this year. Each 3-, 4-, 5-, or 6-year-old child who is eligible, and who did Phase 1, may complete each of the Phase 2 studies once, in any order. \r\n\r\n**PROJECT GARDEN IS NOT CURRENTLY ACCEPTING NEW FAMILIES.**\r\nWe have concluded Phase 1, which contained 8 studies. Studies 1-8 will not even be visible below. If you already did the first 8 studies, you can see the later studies (\"Phase 2\") below. \r\n\r\nPlease email us at project.garden.study@gmail.com if you have any questions!",
+            "founder": {
+                "@type": "Person",
+                "name": "Candice Mills"
+            },
+            "@id": "https://childrenhelpingscience.com/garden",
+            "parentOrganization": {
+                "@type": "Organization",
+                "name": "The University of Texas at Dallas"
+            }
+        }
+    },
+    "variableMeasured": [
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.45",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.85",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.25",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.16",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.7",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.75",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.14",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.43",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.81",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "child_hashed_id",
+            "description": "Hashed identifier for the child associated with this response; can be matched to summary data child_hashed_id. This random ID may be published directly; it is specific to this study. If you need to match children across multiple studies, use the child_global_id."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.27",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "participant__global_id",
+            "description": "Unique identifier for family account associated with this response. Will be the same for multiple responses from a child and for siblings, and across different studies. MUST BE REDACTED FOR PUBLICATION because this allows identification of families across different published studies, which may have unintended privacy consequences. Researchers can use this ID to match participants across studies (subject to their own IRB review), but would need to generate their own random participant IDs for publication in that case. Use participant_hashed_id as a publication-safe alternative if only analyzing data from one Lookit study."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.66",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__uuid",
+            "description": "Unique identifier for response. Can be used to match data to video filenames."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "value",
+            "description": "Value of the data associated with this key (of the indexed event if applicable) - for example, 'giraffe'"
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.34",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "event_number",
+            "description": "Index of the event responsible for this data, if this is an event. Indexes start from 0 within each frame (and within global data) within each response. Blank for non-event data."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.12",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.76",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.4",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.71",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.58",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.49",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.2",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.0",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.83",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.67",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.33",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.35",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__id",
+            "description": "Short ID for this response"
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.60",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "consent__ruling",
+            "description": "Most recent consent video ruling: one of 'accepted' (consent has been reviewed and judged to indidate informed consent), 'rejected' (consent has been reviewed and judged not to indicate informed consent -- e.g., video missing or parent did not read statement), or 'pending' (no current judgement, e.g. has not been reviewed yet or waiting on parent email response')"
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.51",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "frame_id",
+            "description": "Identifier for the particular frame responsible for this data; matches up to an element in the response_sequence in the summary data file"
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.74",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.87",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.70",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "child__age_rounded",
+            "description": "Age in days at time of response of child associated with this response, rounded to the nearest 10 days if under 1 year old and to the nearest 30 days if over 1 year old. May be published; however, if you have more than a few sessions per participant it would be possible to infer the exact age in days (and therefore birthdate) with some effort. In this case you might consider directly jittering birthdates."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.72",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.40",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.19",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.22",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.42",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.5",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.64",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.32",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response_uuid",
+            "description": "Unique identifier for this response; can be matched to summary data and video filenames"
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.9",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.11",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "key",
+            "description": "Label for a piece of data collected during this frame - for example, 'formData.child_favorite_animal'"
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.82",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "consent__comment",
+            "description": "Comment associated with most recent consent ruling (may be used to track e.g. any cases where consent was confirmed by email)"
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "child__additional_information",
+            "description": "Free response 'anything else you'd like us to know' field on child registration form for child associated with this response. Should be redacted or reviewed prior to publication as it may include names or other identifying information."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.44",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.18",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.57",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.69",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.24",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "participant__nickname",
+            "description": "Nickname associated with the family account for this response - generally the mom or dad's name. Must be redacted for publication."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.46",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "child__name",
+            "description": "Nickname for the child associated with this response. Not necessarily a real name (we encourage initials, nicknames, etc. if parents aren't comfortable providing a name) but must be redacted for publication of data."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.3",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "child__birthday",
+            "description": "Birthdate of child associated with this response. Must be redacted for publication of data (switch to age at time of participation; either use rounded age, jitter the age, or redact timestamps of participation)."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.37",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.31",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.38",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.73",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.86",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.36",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__is_preview",
+            "description": "Whether this response was generated by a researcher previewing the experiment. Preview data should not be used in any actual analyses."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__databrary",
+            "description": "Whether the parent agreed to share video data on Databrary - 'yes' or 'no'. If missing, you must treat the video as if 'no' were selected. If 'yes', the video privacy selections also apply to authorized Databrary users."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.6",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "study__uuid",
+            "description": "Unique identifier of study associated with this response. Same for all responses to a given Lookit study."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.61",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__eligibility.0",
+            "description": "List of eligibility codes (defined in Lookit docs), separated by spaces. Can be either 'Eligible' or one or more of: 'Ineligible_TooYoung'/'Ineligible_TooOld', 'Ineligible_CriteriaExpression', 'Ineligible_Participation'."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "child__gender",
+            "description": "Parent-identified gender of child, one of 'm' (male), 'f' (female), 'o' (other), or 'na' (prefer not to answer)"
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "child__condition_list",
+            "description": "List of child characteristics (using condition/characteristic codes in Lookit docs), separated by spaces"
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__birthdate_difference",
+            "description": "Difference between birthdate entered in exit survey, if any, and birthdate of registered child participating. Positive values mean that the birthdate from the exit survey is LATER. Blank if no birthdate available from the exit survey."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.26",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "child__language_list",
+            "description": "List of languages spoken (using language codes in Lookit docs), separated by spaces"
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.48",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.68",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__completed",
+            "description": "Whether the participant submitted the exit survey; depending on study criteria, this may not align with whether the session is considered complete. E.g., participant may have left early but submitted exit survey, or may have completed all test trials but not exit survey."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "child__global_id",
+            "description": "Primary unique identifier for the child associated with this response. Will be the same for multiple responses from one child, even across different Lookit studies. MUST BE REDACTED FOR PUBLICATION because this allows identification of children across different published studies, which may have unintended privacy consequences. Researchers can use this ID to match participants across studies (subject to their own IRB review), but would need to generate their own random participant IDs for publication in that case. Use child_hashed_id as a publication-safe alternative if only analyzing data from one Lookit study."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.1",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.65",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.50",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "child__age_in_days",
+            "description": "Age in days at time of response of child associated with this response, exact. This can be used in conjunction with timestamps to calculate the child's birthdate, so must be jittered or redacted prior to publication unless no timestamp information is shared."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__parent_feedback",
+            "description": "Freeform parent feedback entered into the exit survey, if any. This field may incidentally contain identifying or sensitive information depending on what parents say, so it should be scrubbed or omitted from published data."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.63",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "child__hashed_id",
+            "description": "Identifier for child associated with this response. Will be the same for multiple responses from a child, but is unique to this study. This may be published directly."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.77",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.23",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.52",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.17",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__video_privacy",
+            "description": "Privacy level for videos selected during the exit survey, if the parent completed the exit survey. Possible levels are 'private' (only people listed on your IRB protocol can view), 'scientific' (can share for scientific/educational purposes), and 'public' (can also share for publicity). In no cases may videos be shared for commercial purposes. If this is missing (e.g., family stopped just after the consent form and did not complete the exit survey), you must treat the video as private."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "consent__arbiter",
+            "description": "Name associated with researcher account that made the most recent consent ruling"
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.84",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "participant__hashed_id",
+            "description": "Identifier for family account associated with this response. Will be the same for multiple responses from a child and for siblings, but is unique to this study. This may be published directly."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.59",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.56",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.80",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__eligibility",
+            "description": "List of eligibility codes (defined in Lookit docs), separated by spaces. Can be either 'Eligible' or one or more of: 'Ineligible_TooYoung'/'Ineligible_TooOld', 'Ineligible_CriteriaExpression', 'Ineligible_Participation'."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.10",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.53",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.47",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__date_created",
+            "description": "Timestamp for when participant began session, in format e.g. 2019-11-07 17:13:38.702958+00:00"
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.28",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "child__age_at_birth",
+            "description": "Gestational age at birth in weeks. One of '40 or more weeks', '39 weeks' through '24 weeks', 'Under 24 weeks', or 'Not sure or prefer not to answer'"
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.55",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "consent__time",
+            "description": "Timestamp of most recent consent ruling, format e.g. 2019-12-09 20:40"
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.62",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.8",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.21",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.41",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__withdrawn",
+            "description": "Whether the participant withdrew permission for viewing/use of study video beyond consent video. If true, video will not be available and must not be used."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.78",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.29",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.54",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.13",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.20",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.39",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.30",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.79",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        },
+        {
+            "@type": "PropertyValue",
+            "name": "response__sequence.15",
+            "description": "Each response_sequence.N field (response_sequence.0, response_sequence.1, etc.) gives the ID of the Nth frame displayed during the session associated with this response. Responses may have different sequences due to randomization or if a participant leaves early."
+        }
+    ]
+}
